@@ -1,10 +1,12 @@
 <script setup>
   import CardList from './components/CardList.vue'
-  import data from './model/ankidata.json';
+  //import data from './model/ankidata.json';
+  import { decks } from './store/deckStore'
   import { ref } from 'vue'
 
   let selectedCard = ref(0);
-  const ankiCards = ref(data);
+  //const ankiCards = ref(data);
+  const ankiCard = decks;
 
 </script>
 

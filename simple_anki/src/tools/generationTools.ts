@@ -1,28 +1,59 @@
 import { lastGeneratedCard, setLastGeneratedCard } from "@/store/deckBuffer";
 const LLM_API_KEY = import.meta.env.VITE_LLM_API_KEY;
 
-async function generateImage(prompt: string): Promise<string> {
-  const response = await fetch("https://api.litviva.com/v1/images/generations", {
-    method: "POST",
+export async function generateImage(
+  prompt   : string,
+  size     : string = '256x256',
+  quality  : number = 0.7,
+  mime     : string = 'image/png'
+): Promise<string> {
+  // 1. call LitViva
+  const response = await fetch('https://api.litviva.com/v1/images/generations',{
+    method : 'POST',
     headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${LLM_API_KEY}`
+      'Content-Type' : 'application/json',
+      Authorization  : `Bearer ${LLM_API_KEY}`
     },
     body: JSON.stringify({
-      model: "hackathon/text2image",
+      model : 'hackathon/text2image',
       prompt,
-      n: 1,
-      size: "1024x1024"
+      n     : 1,
+      size
     })
-  });
+  })
 
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error?.message || response.statusText);
+    const err = await response.json()
+    throw new Error(err.error?.message || response.statusText)
   }
 
-  const data = await response.json();
-  return data.data[0].b64_json;
+  const { data } = await response.json()
+  const pngB64   = data[0].b64_json                // raw PNG (big)
+
+  // 2. compress client-side
+  return await reencodeB64(pngB64, size, mime, quality)
+  //return pngB64;
+}
+
+async function reencodeB64(
+  pngB64 : string,
+  size   : string,          // '256x256' etc.
+  mime   : string,
+  q      : number
+): Promise<string> {
+  const [w, h] = size.split('x').map(Number)
+
+  return new Promise<string>((resolve) => {
+    const img = new Image()
+    img.onload = () => {
+      const canvas = document.createElement('canvas')
+      canvas.width  = w
+      canvas.height = h
+      canvas.getContext('2d')!.drawImage(img, 0, 0, w, h)
+      resolve(canvas.toDataURL(mime, q))           // compressed base-64
+    }
+    img.src = `data:image/png;base64,${pngB64}`
+  })
 }
 
 export function registerCreateImageTool() {

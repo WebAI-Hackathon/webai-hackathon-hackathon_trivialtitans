@@ -1,4 +1,4 @@
-import { deck } from "@/store/deckstate";
+import { deck } from "@/store/deckStore";
 
 export function registerDeleteCardTool() {
   const tool = document.querySelector('tool[name="delete_card"]')

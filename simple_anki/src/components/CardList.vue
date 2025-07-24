@@ -1,12 +1,14 @@
 <script setup>
-import Card from './Card.vue';
-import { ref } from 'vue';
-import userData from '../model/userdata.json';
+import Card from './Card.vue'
+import { ref } from 'vue'
+import { handleCreateCategory } from '../tools/categoryHandlers.ts'
+import { handleCreateImagesByCategory } from '../tools/categoryHandlers.ts'
+import userData from '../model/userdata.json'
+import { decks } from '../store/deckStore'
 
+const user = ref(userData)
 
-const user = ref(userData);
-
-
+const ankiCards = decks
 
 const props = defineProps({
   selectedCard: {
@@ -17,31 +19,40 @@ const props = defineProps({
     type: Array,
     required: true
   }
-});
+})
 
-const selectedCard = ref(props.selectedCard);
-const ankiCards = ref(props.ankiCards);
-console.log(selectedCard.value);
-console.log(ankiCards);
 
+
+let selectedCard = ref(props.selectedCard)
 </script>
 
 <template>
   <nav @click="selectedCard = 0;">
     home
   </nav>
+
+  <tool name="create_category" description="Create a new image category" @call="handleCreateCategory">
+    <prop name="name" type="string" required></prop>
+  </tool>
+
+  <tool name="create_images_by_category" description="Generate images for a given category" @call="handleCreateImagesByCategory">
+    <prop name="category" type="string" required></prop>
+    <prop name="count" type="number" required></prop>
+  </tool>
+
   <main>
     <div class="anki-container">
       <div class="card-list" v-if="selectedCard === 0">
 
         <h1>Welcome, <span class="green">{{ user.name }}</span></h1>
         <h3>Here are your Anki cards</h3>
-        <div 
-          v-for="ankiCard in ankiCards" 
+        <div
+          v-for="(ankiCard, idx) in ankiCards"
           :key="ankiCard.id"
-          @click="selectedCard = parseInt(ankiCard.id); console.log(typeof selectedCard)"
-          class="card-list-item">
-          {{ ankiCard.topic }} <br />
+          @click="selectedCard = idx+1; console.log(`Index ${idx}, selectedCard: ${selectedCard}`)"
+          class="card-list-item"
+          >
+            <context>{{ ankiCard.topic }}</context>
         </div>
       </div>
       <div v-else class="card-container">
