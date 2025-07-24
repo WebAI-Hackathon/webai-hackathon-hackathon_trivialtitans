@@ -1,5 +1,5 @@
 interface ImportMetaEnv {
-    readonly LLM_API_KEY: string;
+    readonly VITE_LLM_API_KEY: string;
     // Add more variables as needed
   }
   
