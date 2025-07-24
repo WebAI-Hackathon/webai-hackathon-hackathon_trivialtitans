@@ -1,19 +1,17 @@
 <script setup>
   import CardList from './components/CardList.vue'
+  import data from './model/ankidata.json';
+  import { ref } from 'vue'
+
+  let selectedCard = ref(0);
+  const ankiCards = ref(data);
+
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <CardList />
-    </div>
-  </header>
-
-  <main>
-    <Card />
-  </main>
+  <div>
+      <CardList :selectedCard="selectedCard" :ankiCards="ankiCards" />
+  </div>
 </template>
 
 <style scoped>
