@@ -49,14 +49,27 @@ let selectedCard = ref(props.selectedCard)
       <div class="card-list" v-if="selectedCard === 0">
 
         <h1>Welcome, <span class="green">{{ user.name }}</span></h1>
-        <h3>Here are your Anki cards</h3>
+        <div class="message">
+          <h3>Here are your <span class="green">Anki cards</span>
+            <img src="../assets/anki.svg" width="40px" alt="" />
+          </h3>
+        </div>
+        <div class="card-list-item-header">
+          <h3>Topic</h3>
+          <h3>Date Created</h3>
+        </div>
         <div
           v-for="(ankiCard, idx) in ankiCards"
           :key="ankiCard.id"
           @click="selectedCard = idx+1; console.log(`Index ${idx}, selectedCard: ${selectedCard}`)"
           class="card-list-item"
           >
-            <context>{{ ankiCard.topic }}</context>
+            <context>
+              {{ ankiCard.topic }}
+            </context>
+            <context>
+              {{ Date(ankiCard.createdAt).slice(0, 24) }}
+            </context>
         </div>
       </div>
       <div v-else class="card-container">
@@ -96,6 +109,7 @@ let selectedCard = ref(props.selectedCard)
     gap: 20px;
   }
 
+  .card-list-item-header,
   .card-list-item {
     padding: 10px;
     border: 1px solid #eee;
@@ -105,26 +119,46 @@ let selectedCard = ref(props.selectedCard)
     width: 100%;
     display: flex;
     align-items: center;
+    justify-content: space-between;
+  }
+
+  .card-list-item-header {
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    display: flex;
+    border-bottom-color: hsla(160, 100%, 37%, 1);
   }
 
   .card-list-item:hover {
     background-color: #333;
-    box-shadow: 5px -5px hsla(160, 100%, 37%, 1);
+    box-shadow: 5px 5px hsla(160, 100%, 37%, 1);
     transition: all 0.3s ease-in-out;
   }
 
   .card-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px
+    gap: 20px;
+    position: relative;
   }
 
+  nav {
+    height: 40px;
+    position: sticky;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
 
-@media (min-width: 1024px) {
-
-  .card-list h1,
-  .card-list h3 {
-    text-align: left;
   }
-}
+
+  main {
+    margin-top: 50px;
+  }
+
+  .message h3 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
 </style>
