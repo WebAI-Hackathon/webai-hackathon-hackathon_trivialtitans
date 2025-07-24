@@ -2,7 +2,7 @@
 import Card from './Card.vue'
 import { ref } from 'vue'
 import { handleCreateCategory } from '../tools/categoryHandlers.ts'
-import { handleCreateImagesByCategory } from '../tools/categoryHandlers.ts'
+import { handleCreateImagesByCategory, handleCreateImagesAll } from '../tools/categoryHandlers.ts'
 import userData from '../model/userdata.json'
 import { decks } from '../store/deckStore'
 
@@ -37,6 +37,10 @@ let selectedCard = ref(props.selectedCard)
 
   <tool name="create_images_by_category" description="Generate images for a given category" @call="handleCreateImagesByCategory">
     <prop name="category" type="string" required></prop>
+    <prop name="count" type="number" required></prop>
+  </tool>
+
+  <tool name="create_images_all_category" description="Generate images for all category" @call="handleCreateImagesAll">
     <prop name="count" type="number" required></prop>
   </tool>
 
