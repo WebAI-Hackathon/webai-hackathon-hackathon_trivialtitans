@@ -1,0 +1,432 @@
+[
+  {
+    "topic": "Geography",
+    "created": "1753346270010",
+    "modified": "1753346260010",
+    "id": "1",
+    "cards": [
+      {
+        "image": "earth.jpg",
+        "description": "3rd planet from the Sun, home to life",
+        "review": {
+          "lastReviewed": "1753540000000",
+          "nextDue": "1753600000000",
+          "interval": 3,
+          "repetition": 2
+        }
+      },
+      {
+        "image": "diamond.jpg",
+        "description": "Form of carbon, one of the hardest natural materials",
+        "review": {
+          "lastReviewed": "1753539000000",
+          "nextDue": "1753599000000",
+          "interval": 2,
+          "repetition": 1
+        }
+      },
+      {
+        "image": "dune.jpg",
+        "description": "Hill of sand formed by the wind",
+        "review": {
+          "lastReviewed": "1753538000000",
+          "nextDue": "1753598000000",
+          "interval": 2,
+          "repetition": 1
+        }
+      },
+      {
+        "image": "mountain.jpg",
+        "description": "Large landform that rises prominently above its surroundings",
+        "review": {
+          "lastReviewed": "1753542000000",
+          "nextDue": "1753602000000",
+          "interval": 3,
+          "repetition": 2
+        }
+      },
+      {
+        "image": "river.jpg",
+        "description": "Natural flowing watercourse, usually freshwater",
+        "review": {
+          "lastReviewed": "1753541000000",
+          "nextDue": "1753601000000",
+          "interval": 3,
+          "repetition": 2
+        }
+      },
+      {
+        "image": "desert.jpg",
+        "description": "Barren area with little rainfall and sparse vegetation",
+        "review": {
+          "lastReviewed": "1753537000000",
+          "nextDue": "1753597000000",
+          "interval": 2,
+          "repetition": 1
+        }
+      },
+      {
+        "image": "volcano.jpg",
+        "description": "Rupture in Earth's crust where lava escapes",
+        "review": {
+          "lastReviewed": "1753543000000",
+          "nextDue": "1753603000000",
+          "interval": 3,
+          "repetition": 2
+        }
+      },
+      {
+        "image": "glacier.jpg",
+        "description": "Large, slow-moving mass of ice formed from snow",
+        "review": {
+          "lastReviewed": "1753536000000",
+          "nextDue": "1753596000000",
+          "interval": 2,
+          "repetition": 1
+        }
+      }
+    ]
+  },
+  {
+    "topic": "Biology",
+    "created": "1753346271010",
+    "modified": "1753346271010",
+    "id": "2",
+    "cards": [
+      {
+        "image": "cell.jpg",
+        "description": "Basic structural and functional unit of life",
+        "review": {
+          "lastReviewed": "1753540000000",
+          "nextDue": "1753600000000",
+          "interval": 3,
+          "repetition": 2
+        }
+      },
+      {
+        "image": "dna.jpg",
+        "description": "Molecule carrying genetic instructions",
+        "review": {
+          "lastReviewed": "1753541000000",
+          "nextDue": "1753601000000",
+          "interval": 3,
+          "repetition": 2
+        }
+      },
+      {
+        "image": "leaf.jpg",
+        "description": "Plant organ responsible for photosynthesis",
+        "review": {
+          "lastReviewed": "1753539000000",
+          "nextDue": "1753599000000",
+          "interval": 2,
+          "repetition": 1
+        }
+      },
+      {
+        "image": "heart.jpg",
+        "description": "Organ that pumps blood through the body",
+        "review": {
+          "lastReviewed": "1753542000000",
+          "nextDue": "1753602000000",
+          "interval": 3,
+          "repetition": 2
+        }
+      },
+      {
+        "image": "neuron.jpg",
+        "description": "Nerve cell that transmits signals",
+        "review": {
+          "lastReviewed": "1753538000000",
+          "nextDue": "1753598000000",
+          "interval": 2,
+          "repetition": 1
+        }
+      },
+      {
+        "image": "bacteria.jpg",
+        "description": "Single-celled microorganisms, some beneficial, some harmful",
+        "review": {
+          "lastReviewed": "1753543000000",
+          "nextDue": "1753603000000",
+          "interval": 3,
+          "repetition": 2
+        }
+      },
+      {
+        "image": "fungi.jpg",
+        "description": "Group of spore-producing organisms including molds and mushrooms",
+        "review": {
+          "lastReviewed": "1753537000000",
+          "nextDue": "1753597000000",
+          "interval": 2,
+          "repetition": 1
+        }
+      },
+      {
+        "image": "microscope.jpg",
+        "description": "Instrument used to observe tiny organisms and cells",
+        "review": {
+          "lastReviewed": "1753544000000",
+          "nextDue": "1753604000000",
+          "interval": 3,
+          "repetition": 2
+        }
+      }
+    ]
+  },
+  {
+    "topic": "Mathematics",
+    "created": "1753346272010",
+    "modified": "1753346272010",
+    "id": "3",
+    "cards": [
+      {
+        "image": "pi.jpg",
+        "description": "Mathematical constant representing ratio of circle's circumference to diameter",
+        "review": {
+          "lastReviewed": "1753541000000",
+          "nextDue": "1753601000000",
+          "interval": 3,
+          "repetition": 2
+        }
+      },
+      {
+        "image": "triangle.jpg",
+        "description": "Polygon with three edges and three vertices",
+        "review": {
+          "lastReviewed": "1753539000000",
+          "nextDue": "1753599000000",
+          "interval": 2,
+          "repetition": 1
+        }
+      },
+      {
+        "image": "calculator.jpg",
+        "description": "Device used for performing mathematical calculations",
+        "review": {
+          "lastReviewed": "1753543000000",
+          "nextDue": "1753603000000",
+          "interval": 3,
+          "repetition": 2
+        }
+      },
+      {
+        "image": "graph.jpg",
+        "description": "Visual representation of data or equations",
+        "review": {
+          "lastReviewed": "1753538000000",
+          "nextDue": "1753598000000",
+          "interval": 2,
+          "repetition": 1
+        }
+      },
+      {
+        "image": "algebra.jpg",
+        "description": "Branch of math dealing with symbols and rules for manipulating them",
+        "review": {
+          "lastReviewed": "1753544000000",
+          "nextDue": "1753604000000",
+          "interval": 3,
+          "repetition": 2
+        }
+      },
+      {
+        "image": "geometry.jpg",
+        "description": "Branch of math concerning shapes, sizes, and properties of space",
+        "review": {
+          "lastReviewed": "1753537000000",
+          "nextDue": "1753597000000",
+          "interval": 2,
+          "repetition": 1
+        }
+      },
+      {
+        "image": "angle.jpg",
+        "description": "Figure formed by two rays with a common endpoint",
+        "review": {
+          "lastReviewed": "1753542000000",
+          "nextDue": "1753602000000",
+          "interval": 3,
+          "repetition": 2
+        }
+      },
+      {
+        "image": "equation.jpg",
+        "description": "Mathematical statement that asserts the equality of two expressions",
+        "review": {
+          "lastReviewed": "1753540000000",
+          "nextDue": "1753600000000",
+          "interval": 3,
+          "repetition": 2
+        }
+      }
+    ]
+  },
+  {
+    "topic": "History",
+    "created": "1753346273010",
+    "modified": "1753346273010",
+    "id": "4",
+    "cards": [
+      {
+        "image": "pyramids.jpg",
+        "description": "Ancient Egyptian structures built as tombs",
+        "review": {
+          "lastReviewed": "1753539000000",
+          "nextDue": "1753599000000",
+          "interval": 2,
+          "repetition": 1
+        }
+      },
+      {
+        "image": "colosseum.jpg",
+        "description": "Large Roman amphitheater in Rome",
+        "review": {
+          "lastReviewed": "1753541000000",
+          "nextDue": "1753601000000",
+          "interval": 3,
+          "repetition": 2
+        }
+      },
+      {
+        "image": "independence.jpg",
+        "description": "Freedom from control of another country",
+        "review": {
+          "lastReviewed": "1753540000000",
+          "nextDue": "1753600000000",
+          "interval": 3,
+          "repetition": 2
+        }
+      },
+      {
+        "image": "renaissance.jpg",
+        "description": "Cultural movement that spanned the 14th to 17th century",
+        "review": {
+          "lastReviewed": "1753538000000",
+          "nextDue": "1753598000000",
+          "interval": 2,
+          "repetition": 1
+        }
+      },
+      {
+        "image": "civilrights.jpg",
+        "description": "Movement to end racial discrimination and gain equal rights",
+        "review": {
+          "lastReviewed": "1753542000000",
+          "nextDue": "1753602000000",
+          "interval": 3,
+          "repetition": 2
+        }
+      },
+      {
+        "image": "constitution.jpg",
+        "description": "Founding legal document outlining the framework of government",
+        "review": {
+          "lastReviewed": "1753537000000",
+          "nextDue": "1753597000000",
+          "interval": 2,
+          "repetition": 1
+        }
+      },
+      {
+        "image": "vikings.jpg",
+        "description": "Norse explorers and warriors from Scandinavia",
+        "review": {
+          "lastReviewed": "1753544000000",
+          "nextDue": "1753604000000",
+          "interval": 3,
+          "repetition": 2
+        }
+      }
+    ]
+  },
+  {
+    "topic": "Technology",
+    "created": "1753346274010",
+    "modified": "1753346274010",
+    "id": "5",
+    "cards": [
+      {
+        "image": "computer.jpg",
+        "description": "Electronic device for storing and processing data",
+        "review": {
+          "lastReviewed": "1753540000000",
+          "nextDue": "1753600000000",
+          "interval": 3,
+          "repetition": 2
+        }
+      },
+      {
+        "image": "smartphone.jpg",
+        "description": "Mobile phone with advanced features like apps and internet",
+        "review": {
+          "lastReviewed": "1753539000000",
+          "nextDue": "1753599000000",
+          "interval": 2,
+          "repetition": 1
+        }
+      },
+      {
+        "image": "robot.jpg",
+        "description": "Machine capable of carrying out tasks automatically",
+        "review": {
+          "lastReviewed": "1753541000000",
+          "nextDue": "1753601000000",
+          "interval": 3,
+          "repetition": 2
+        }
+      },
+      {
+        "image": "ai.jpg",
+        "description": "Field of computer science focused on intelligent machines",
+        "review": {
+          "lastReviewed": "1753542000000",
+          "nextDue": "1753602000000",
+          "interval": 3,
+          "repetition": 2
+        }
+      },
+      {
+        "image": "internet.jpg",
+        "description": "Global network enabling communication and data sharing",
+        "review": {
+          "lastReviewed": "1753538000000",
+          "nextDue": "1753598000000",
+          "interval": 2,
+          "repetition": 1
+        }
+      },
+      {
+        "image": "cloud.jpg",
+        "description": "Delivery of computing services over the internet",
+        "review": {
+          "lastReviewed": "1753537000000",
+          "nextDue": "1753597000000",
+          "interval": 2,
+          "repetition": 1
+        }
+      },
+      {
+        "image": "vr.jpg",
+        "description": "Simulated experience that can be similar to or different from the real world",
+        "review": {
+          "lastReviewed": "1753543000000",
+          "nextDue": "1753603000000",
+          "interval": 3,
+          "repetition": 2
+        }
+      },
+      {
+        "image": "drone.jpg",
+        "description": "Unmanned aerial vehicle used for various applications",
+        "review": {
+          "lastReviewed": "1753544000000",
+          "nextDue": "1753604000000",
+          "interval": 3,
+          "repetition": 2
+        }
+      }
+    ]
+  }
+]
