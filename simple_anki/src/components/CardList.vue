@@ -5,6 +5,7 @@ import { handleCreateCategory } from '../tools/categoryHandlers.ts'
 import { handleCreateImagesByCategory, handleCreateImagesAll } from '../tools/categoryHandlers.ts'
 import userData from '../model/userdata.json'
 import { decks } from '../store/deckStore'
+import { saveAs } from 'file-saver'
 
 const user = ref(userData)
 
@@ -24,12 +25,38 @@ const props = defineProps({
 
 
 let selectedCard = ref(props.selectedCard)
+
+async function downloadApkg() {
+  const resp = await fetch('http://localhost:3001/api/export-apkg', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(decks.value) // Ensure decks.value contains valid data
+  });
+
+  if (!resp.ok) {
+    const { error } = await resp.json();
+    alert('Export failed: ' + error);
+    return;
+  }
+
+  const blob = await resp.blob();
+  saveAs(blob, 'image_decks.apkg'); // Save the file locally
+  alert('APKG exported 🎉 – open it with Anki.');
+}
 </script>
 
 <template>
   <nav @click="selectedCard = 0;">
     home
   </nav>
+
+  <button @click="downloadApkg" class="export-btn">
+    Export decks as .apkg
+  </button>
+
+  <tool name="export_apkg" description="Export decks as .apkg file" @call="downloadApkg">
+    <prop name="decks" type="array" required />
+  </tool>
 
   <tool name="create_category" description="Create a new image category" @call="handleCreateCategory">
     <prop name="name" type="string" required></prop>
