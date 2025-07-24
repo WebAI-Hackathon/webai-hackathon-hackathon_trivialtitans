@@ -21,13 +21,13 @@
       class="anki-card"
       :class="{selected: selectedCard === cardData}"
       v-for="cardData in card">
+      
       <div class="card-body card-image">
-        <h2>{{ cardData.image }}</h2>      
-        <img :src="`/assets/${cardData.image}`" alt="Card Image" />
+        <img :src="`${cardData.image}`" alt="Card Image" />
       </div>
-      <div class="card-body card-description">
+      <!-- <div class="card-body card-description">
         <p>{{ cardData.description }}</p>
-      </div>
+      </div> -->
     </div>
   </section>
   <section class="anki-card-description">
@@ -44,8 +44,8 @@
 <style scoped>
   .anki-card {
     border: 1px solid #eee;
-    width: 200px;
-    height: 400px;
+    width: 280px;
+    height: 280px;
     cursor: pointer;
   }
 
@@ -67,4 +67,10 @@
     border: 2px solid #4CAF50;
     box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
   }
+
+  .card-image {
+    display: flex;
+    justify-content: center;
+  }
+
 </style>
