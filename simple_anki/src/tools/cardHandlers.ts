@@ -1,6 +1,14 @@
 import { decks } from '@/store/deckStore'
 import { generateImage } from './generationTools'
 
+const checkStorageLimit = () => {
+  const storageData = JSON.stringify(decks.value);
+  const sizeInMB = new Blob([storageData]).size / (1024 * 1024);
+  if (sizeInMB >= 4.5) { // Warning at 4.5MB
+    throw new Error('Storage limit nearly reached. Please export and clear some cards first.');
+  }
+};
+
 export async function handleGenerateNewCard(event: any) {
   console.log('[DEBUG] Starting handleGenerateNewCard');
   console.log('[DEBUG] Event:', event);
@@ -38,6 +46,8 @@ export async function handleGenerateNewCard(event: any) {
   }
 
   try {
+    checkStorageLimit();
+
     const prompt = details ? `${category}, ${details}` : category;
     console.log('[DEBUG] Generated prompt:', prompt);
 
@@ -122,5 +132,74 @@ export async function handleUpdateCard(event: any) {
     event.detail.success = false
     event.detail.message = `Failed to update card: ${err.message}`
     console.error('Error updating card:', err)
+  }
+}
+
+export async function handleThemeImageGeneration(event: any) {
+  console.log('[DEBUG] Starting themed image generation');
+  
+  const { category, theme } = event.detail;
+  
+  if (!category || !theme) {
+    event.detail.success = false;
+    event.detail.message = 'Category and theme are required';
+    return;
+  }
+
+  const themes = {
+    cartoon: [
+      'cartoon style', 'animated', 'disney style', 
+      'pixar style', 'hand-drawn animation'
+    ],
+    realistic: [
+      'photorealistic', 'highly detailed', 'professional photo',
+      'realistic rendering', '4k resolution'
+    ],
+    fantasy: [
+      'fantasy art', 'magical atmosphere', 'mystical',
+      'ethereal', 'dreamlike quality'
+    ]
+  };
+
+  // Get random prompt modifier for selected theme
+  const modifiers = themes[theme as keyof typeof themes] || [];
+  const randomModifier = modifiers[Math.floor(Math.random() * modifiers.length)];
+  
+  const prompt = `${category}, ${randomModifier}`;
+  console.log('[DEBUG] Generated themed prompt:', prompt);
+
+  const deck = decks.value.find(d => 
+    d.topic.toLowerCase() === category.toLowerCase()
+  );
+
+  if (!deck) {
+    event.detail.success = false;
+    event.detail.message = `Deck with category "${category}" not found.`;
+    return;
+  }
+
+  try {
+    const b64Image = await generateImage(prompt);
+    
+    const newCard = {
+      image: b64Image,
+      description: `${category} in ${theme} style: ${randomModifier}`,
+      review: {
+        lastReviewed: Date.now(),
+        nextDue: Date.now() + 3 * 86400000,
+        interval: 3,
+        repetition: 1
+      }
+    };
+
+    deck.cards.push(newCard);
+    deck.modified = Date.now();
+
+    event.detail.success = true;
+    event.detail.message = `Generated ${theme} style image for ${category}`;
+  } catch (err: any) {
+    console.error('[DEBUG] Error:', err);
+    event.detail.success = false;
+    event.detail.message = `Failed to generate themed image: ${err.message}`;
   }
 }

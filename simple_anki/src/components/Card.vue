@@ -1,6 +1,6 @@
 <script setup>
-import { ref } from 'vue';
-import { handleUpdateCard, handleGenerateNewCard } from '../tools/cardHandlers.ts';
+import { ref, computed } from 'vue';
+import { handleUpdateCard, handleGenerateNewCard, handleThemeImageGeneration } from '../tools/cardHandlers.ts';
 import { decks } from '../store/deckStore';
 
 const props = defineProps({
@@ -92,10 +92,46 @@ const handleToolCall = (event) => {
   console.log('Category:', props.category);
   handleGenerateNewCard(event);
 };
+
+const handleThemedImageGeneration = (event) => {
+  console.log('Themed tool called with event:', event);
+  console.log('Category:', props.category);
+  handleThemeImageGeneration(event);
+};
+
+// Add storage calculation
+const calculateStorageUsage = computed(() => {
+  const storageData = JSON.stringify(decks.value);
+  const sizeInMB = (new Blob([storageData]).size / (1024 * 1024)).toFixed(2);
+  const maxSize = 5; // Chrome typically allows 5-10MB, being conservative with 5MB
+  const percentUsed = ((sizeInMB / maxSize) * 100).toFixed(1);
+  
+  return {
+    current: sizeInMB,
+    max: maxSize,
+    percent: percentUsed,
+    remaining: (maxSize - sizeInMB).toFixed(2)
+  };
+});
 </script>
 
 <template>
   <div class="card-layout">
+    <!-- Add storage indicator at the top -->
+    <div class="storage-indicator" :class="{ 'warning': calculateStorageUsage.percent > 80 }">
+      Storage: {{ calculateStorageUsage.current }}MB / {{ calculateStorageUsage.max }}MB 
+      ({{ calculateStorageUsage.percent }}%)
+      <div class="progress-bar">
+        <div 
+          class="progress" 
+          :style="{ width: `${calculateStorageUsage.percent}%` }"
+        ></div>
+      </div>
+      <div v-if="calculateStorageUsage.percent > 80" class="warning-text">
+        Warning: Storage nearly full! Consider exporting and clearing some cards.
+      </div>
+    </div>
+
     <section class="anki-card-image">
       <tool 
         name="create_specific_image" 
@@ -103,6 +139,20 @@ const handleToolCall = (event) => {
         @call="handleToolCall">
         <prop name="category" :value="props.category" type="string" required></prop>
         <prop name="details" type="string" required></prop>
+      </tool>
+
+      <tool 
+        name="create_themed_image" 
+        :description="`Create a ${props.category} image in specific style`"
+        @call="handleThemedImageGeneration">
+        <prop name="category" :value="props.category" type="string" required></prop>
+        <prop 
+          name="theme" 
+          type="string" 
+          required 
+          :options="['cartoon', 'realistic', 'fantasy']"
+          description="Choose the visual style for the image">
+        </prop>
       </tool>
       <div 
         v-for="(cardData, index) in card"
@@ -139,23 +189,41 @@ const handleToolCall = (event) => {
             ✏️ Edit
           </button>
         </div>
-        <div v-if="editingDescription" class="edit-description">
-          <textarea 
-            v-model="newDescription"
-            rows="3"
-            class="description-input"
-          ></textarea>
-          <div class="edit-actions">
-            <button class="save-btn" @click="handleSaveDescription()">
-              Save
-            </button>
-            <button class="cancel-btn" @click="editingDescription = false">
-              Cancel
-            </button>
+        
+        <!-- Fixed text field/label next to description -->
+        <div class="description-content">
+          <div class="fixed-info">
+            <label class="fixed-label">Category:</label>
+            <div class="fixed-text">{{ props.category }}</div>
+            
+            <label class="fixed-label">Card ID:</label>
+            <div class="fixed-text">{{ card.indexOf(selectedCard) + 1 }}</div>
+            
+            <label class="fixed-label">Status:</label>
+            <div class="fixed-text status-active">Active</div>
           </div>
-        </div>
-        <div v-else class="description-text">
-          {{ selectedCard.description }}
+          
+          <div class="description-section">
+            <div v-if="editingDescription" class="edit-description">
+              <textarea 
+                v-model="newDescription"
+                rows="3"
+                class="description-input"
+                placeholder="Enter card description..."
+              ></textarea>
+              <div class="edit-actions">
+                <button class="save-btn" @click="handleSaveDescription()">
+                  Save
+                </button>
+                <button class="cancel-btn" @click="editingDescription = false">
+                  Cancel
+                </button>
+              </div>
+            </div>
+            <div v-else class="description-text">
+              {{ selectedCard.description }}
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -227,6 +295,50 @@ section.anki-card-image {
   margin-bottom: 10px;
 }
 
+.description-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.fixed-info {
+  background: rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  border-radius: 6px;
+  border-left: 4px solid hsla(160, 100%, 37%, 1);
+}
+
+.fixed-label {
+  font-weight: bold;
+  color: hsla(160, 100%, 37%, 1);
+  font-size: 0.9rem;
+  display: block;
+  margin-top: 10px;
+}
+
+.fixed-label:first-child {
+  margin-top: 0;
+}
+
+.fixed-text {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 8px 12px;
+  border-radius: 4px;
+  margin-top: 4px;
+  font-family: monospace;
+  font-size: 0.95rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.status-active {
+  color: #28a745;
+  font-weight: bold;
+}
+
+.description-section {
+  flex: 1;
+}
+
 .edit-btn-small {
   background: rgba(0, 123, 255, 0.7);
   color: white;
@@ -253,7 +365,11 @@ section.anki-card-image {
   line-height: 1.8; /* Increased from 1.6 */
   white-space: pre-wrap;
   font-size: 1.1rem; /* Larger text */
-  padding: 10px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  min-height: 120px;
 }
 
 .selected {
@@ -320,6 +436,7 @@ section.anki-card-image {
   resize: vertical;
   min-height: 120px; /* Taller default height */
   font-size: 1.1rem; /* Match text size */
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .edit-actions {
@@ -369,6 +486,19 @@ section.anki-card-image {
     max-width: 700px; /* Match card width */
     margin-top: 20px;
   }
+  
+  .description-content {
+    flex-direction: row;
+    gap: 15px;
+  }
+  
+  .fixed-info {
+    flex: 0 0 200px;
+  }
+  
+  .description-section {
+    flex: 1;
+  }
 }
 
 @media (max-width: 768px) {
@@ -385,5 +515,52 @@ section.anki-card-image {
     transform: translateX(50%);
     align-items: center;
   }
+  
+  .description-content {
+    flex-direction: column;
+  }
+  
+  .fixed-info {
+    flex: none;
+  }
+}
+
+/* Add these styles to your existing styles */
+.storage-indicator {
+  width: 100%;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+}
+
+.storage-indicator.warning {
+  background: rgba(255, 193, 7, 0.2);
+}
+
+.progress-bar {
+  width: 100%;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+  margin-top: 5px;
+}
+
+.progress {
+  height: 100%;
+  background: hsla(160, 100%, 37%, 1);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.warning .progress {
+  background: #ffc107;
+}
+
+.warning-text {
+  color: #856404;
+  font-size: 0.8rem;
+  margin-top: 5px;
 }
 </style>

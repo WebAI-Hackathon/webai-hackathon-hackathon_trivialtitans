@@ -117,3 +117,33 @@ export async function handleCreateImagesAll(event: any) {
   event.detail.success = true
   event.detail.message = `Created ${count} image(s) for each category.`
 }
+
+export function handleDeleteCategory(event: any) {
+  const { category, confirmed } = event.detail;
+
+  const deckIndex = decks.value.findIndex(d => 
+    d.topic.toLowerCase() === category.toLowerCase()
+  );
+
+  if (deckIndex === -1) {
+    event.detail.success = false;
+    event.detail.message = `Category "${category}" not found.`;
+    return;
+  }
+
+  const deck = decks.value[deckIndex];
+  
+  // Check if deck has cards and confirmation wasn't given
+  if (deck.cards?.length > 0 && !confirmed) {
+    event.detail.success = false;
+    event.detail.requiresConfirmation = true;
+    event.detail.message = `Category "${category}" contains ${deck.cards.length} images. Are you sure you want to delete it?`;
+    return;
+  }
+
+  // Remove the deck
+  decks.value.splice(deckIndex, 1);
+  
+  event.detail.success = true;
+  event.detail.message = `Category "${category}" deleted successfully.`;
+}
