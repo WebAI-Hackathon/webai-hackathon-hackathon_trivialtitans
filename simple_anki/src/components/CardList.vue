@@ -5,6 +5,7 @@ import { handleCreateCategory } from '../tools/categoryHandlers.ts'
 import { handleCreateImagesByCategory, handleCreateImagesAll } from '../tools/categoryHandlers.ts'
 import userData from '../model/userdata.json'
 import { decks } from '../store/deckStore'
+import { saveAs } from 'file-saver'
 
 const user = ref(userData)
 
@@ -24,12 +25,50 @@ const props = defineProps({
 
 
 let selectedCard = ref(props.selectedCard)
+
+async function downloadApkg() {
+  const resp = await fetch('http://localhost:3001/api/export-apkg', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(decks.value) // Ensure decks.value contains valid data
+  });
+
+  if (!resp.ok) {
+    const { error } = await resp.json();
+    alert('Export failed: ' + error);
+    return;
+  }
+
+  const blob = await resp.blob();
+  saveAs(blob, 'image_decks.apkg'); // Save the file locally
+  alert('APKG exported 🎉 – open it with Anki.');
+}
+
+async function downloadDummyApkg() {
+  // Create dummy content for the APKG file.
+  const dummyContent = "This is a dummy APKG file.\nIt contains no real data.";
+  
+  // Create a Blob from the dummy text.
+  const blob = new Blob([dummyContent], { type: "application/apkg" });
+
+  // Use FileSaver's saveAs to trigger download with the filename "image_decks.apkg".
+  saveAs(blob, "image_decks.apkg");
+  
+  alert("APKG exported 🎉 – open it with Anki.");
+}
 </script>
 
 <template>
   <nav @click="selectedCard = 0;">
     home
   </nav>
+
+  <tool name="export_apkg" description="Export decks as .apkg file" @call="downloadApkg">
+    <prop name="decks" type="array" required />
+  </tool>
+
+  <tool name="export_dummy_apkg" description="Export dummy deck as .apkg file for live demo" @call="downloadDummyApkg">
+  </tool>
 
   <tool name="create_category" description="Create a new image category" @call="handleCreateCategory">
     <prop name="name" type="string" required></prop>
@@ -73,7 +112,10 @@ let selectedCard = ref(props.selectedCard)
         </div>
       </div>
       <div v-else class="card-container">
-        <Card :ankiCard="ankiCards[selectedCard - 1].cards" />
+        <Card 
+          :ankiCard="ankiCards[selectedCard - 1].cards"
+          :category="ankiCards[selectedCard - 1].topic" 
+        />
       </div>
     </div>
   </main>

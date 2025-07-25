@@ -1,21 +1,31 @@
 <script setup>
-  import { ref } from 'vue';
+import { ref } from 'vue';
+import { handleGenerateNewCard } from '../tools/cardHandlers.ts';
 
-  const props = defineProps({
-    ankiCard: {
-      type: Object,
-      required: true
-    }
-  });
+const props = defineProps({
+  ankiCard: {
+    type: Object,
+    required: true
+  },
+  category: {
+    type: String,
+    required: true
+  }
+});
 
-  
-  
-  const card = ref(props.ankiCard);
-  let selectedCard = ref(null);
+const card = ref(props.ankiCard);
+let selectedCard = ref(null);
 </script>
 
 <template>
   <section class="anki-card-image">
+    <tool 
+      name="create_specific_image" 
+      :description="`Create a new image for category '${props.category}'`"
+      @call="handleGenerateNewCard">
+      <prop name="category" type="string" required></prop>
+      <prop name="details" type="string" required></prop>
+    </tool>
     <div 
       @click="selectedCard = cardData"
       class="anki-card"
