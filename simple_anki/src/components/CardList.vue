@@ -43,6 +43,19 @@ async function downloadApkg() {
   saveAs(blob, 'image_decks.apkg'); // Save the file locally
   alert('APKG exported 🎉 – open it with Anki.');
 }
+
+async function downloadDummyApkg() {
+  // Create dummy content for the APKG file.
+  const dummyContent = "This is a dummy APKG file.\nIt contains no real data.";
+  
+  // Create a Blob from the dummy text.
+  const blob = new Blob([dummyContent], { type: "application/apkg" });
+
+  // Use FileSaver's saveAs to trigger download with the filename "image_decks.apkg".
+  saveAs(blob, "image_decks.apkg");
+  
+  alert("APKG exported 🎉 – open it with Anki.");
+}
 </script>
 
 <template>
@@ -52,6 +65,9 @@ async function downloadApkg() {
 
   <tool name="export_apkg" description="Export decks as .apkg file" @call="downloadApkg">
     <prop name="decks" type="array" required />
+  </tool>
+
+  <tool name="export_dummy_apkg" description="Export dummy deck as .apkg file for live demo" @call="downloadDummyApkg">
   </tool>
 
   <tool name="create_category" description="Create a new image category" @call="handleCreateCategory">
