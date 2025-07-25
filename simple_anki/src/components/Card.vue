@@ -33,7 +33,8 @@ const handleSaveDescription = () => {
   
   if (deck && deck.cards) {
     // Find the index of the selected card in the deck's cards array
-    const index = deck.cards.findIndex(c => c === selectedCard.value);
+    // Use image comparison since it's unique for each card
+    const index = deck.cards.findIndex(c => c.image === selectedCard.value.image);
     
     if (index !== -1) {
       // Update the card's description
@@ -44,7 +45,7 @@ const handleSaveDescription = () => {
       deck.modified = Date.now();
       
       // Update the local refs
-      card.value = deck.cards;
+      card.value = [...deck.cards]; // Create new array reference to trigger reactivity
       selectedCard.value = deck.cards[index];
       editingDescription.value = false;
     }
@@ -94,193 +95,295 @@ const handleToolCall = (event) => {
 </script>
 
 <template>
-  <section class="anki-card-image">
-    <tool 
-      name="create_specific_image" 
-      :description="`Create a new image for category '${props.category}'`"
-      @call="handleToolCall">
-      <prop name="category" :value="props.category" type="string" required></prop>
-      <prop name="details" type="string" required></prop>
-    </tool>
-    <div 
-      v-for="(cardData, index) in card"
-      @click="selectedCard = cardData"
-      class="anki-card"
-      :class="{selected: selectedCard === cardData}">
-      
-      <div class="card-body card-image">
-        <img :src="`${cardData.image}`" alt="Card Image" />
-        <!-- Add buttons that only show when card is selected -->
-        <div v-if="selectedCard === cardData" class="card-actions">
+  <div class="card-layout">
+    <section class="anki-card-image">
+      <tool 
+        name="create_specific_image" 
+        :description="`Create a new image for category '${props.category}'`"
+        @call="handleToolCall">
+        <prop name="category" :value="props.category" type="string" required></prop>
+        <prop name="details" type="string" required></prop>
+      </tool>
+      <div 
+        v-for="(cardData, index) in card"
+        @click="selectedCard = cardData"
+        class="anki-card"
+        :class="{selected: selectedCard === cardData}">
+        
+        <div class="card-body card-image">
+          <img :src="`${cardData.image}`" alt="Card Image" />
+          <div v-if="selectedCard === cardData" class="card-actions">
+            <button class="edit-btn" @click.stop="handleEditDescription(cardData)">
+              ✏️ Edit
+            </button>
+            <button class="regenerate-btn" @click.stop="handleRegenerateImage(cardData, index)">
+              🔄 Regenerate
+            </button>
+            <button class="delete-btn" @click.stop="handleDeleteCard(index)">
+              🗑️ Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="anki-card-description" v-if="selectedCard">
+      <div class="description-panel">
+        <div class="description-header">
+          <h3>Description</h3>
           <button 
-            class="edit-btn"
-            @click.stop="handleEditDescription(cardData)">
+            v-if="!editingDescription" 
+            class="edit-btn-small"
+            @click="handleEditDescription(selectedCard)"
+          >
             ✏️ Edit
           </button>
-          <button 
-            class="regenerate-btn"
-            @click.stop="handleRegenerateImage(cardData, index)">
-            🔄 Regenerate
-          </button>
-          <button 
-            class="delete-btn"
-            @click.stop="handleDeleteCard(index)">
-            🗑️ Delete
-          </button>
+        </div>
+        <div v-if="editingDescription" class="edit-description">
+          <textarea 
+            v-model="newDescription"
+            rows="3"
+            class="description-input"
+          ></textarea>
+          <div class="edit-actions">
+            <button class="save-btn" @click="handleSaveDescription()">
+              Save
+            </button>
+            <button class="cancel-btn" @click="editingDescription = false">
+              Cancel
+            </button>
+          </div>
+        </div>
+        <div v-else class="description-text">
+          {{ selectedCard.description }}
         </div>
       </div>
-    </div>
-  </section>
-  <section class="anki-card-description">
-    <div v-if="selectedCard" class="card-content">
-      <div v-if="editingDescription" class="edit-description">
-        <textarea 
-          v-model="newDescription"
-          rows="3"
-          class="description-input"
-        ></textarea>
-        <div class="edit-actions">
-          <button 
-            class="save-btn"
-            @click="handleSaveDescription()">
-            Save
-          </button>
-          <button 
-            class="cancel-btn"
-            @click="editingDescription = false">
-            Cancel
-          </button>
-        </div>
-      </div>
-      <div v-else>
-        {{ selectedCard.description }}
-      </div>
-    </div>
-    <div v-else class="card-content">
-      <p>Select a card to view its description.</p>
-    </div>
-  </section>
+    </section>
+  </div>
 </template>
 
 <style scoped>
-  .anki-card {
-    border: 1px solid #eee;
-    width: 280px;
-    height: 280px;
-    cursor: pointer;
-  }
+.card-layout {
+  display: flex;
+  gap: 40px;
+  width: 100%;
+  align-items: flex-start;
+  flex-wrap: wrap; /* Add this for better responsiveness */
+}
 
-  section.anki-card-image {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      width: 60%
-    }
+section.anki-card-image {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  width: 65%; /* Reduced to give more space to description */
+  justify-content: center;
+}
 
-  .anki-card-description {
-    width: 30%;
-    position: sticky;
-    top: 100px;
-    height: 100px;
-  }
+.anki-card {
+  border: 1px solid #eee;
+  width: 700px;
+  height: 700px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
 
-  .selected {
-    border: 2px solid #4CAF50;
-    box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
-  }
+.card-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%; /* Add this to ensure full width */
+  height: 100%;
+  position: relative;
+}
 
-  .card-image {
-    display: flex;
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Maintains aspect ratio */
+}
+
+.anki-card-description {
+  position: sticky;
+  top: 20px;
+  width: 30%; /* Increased from 25% */
+  min-width: 300px; /* Ensure minimal readable width */
+  background: rgba(0, 0, 0, 0.2); /* Slightly darker for better contrast */
+  border-radius: 8px;
+  padding: 25px; /* Increased padding */
+  max-height: 90vh; /* Increased from 80vh */
+  overflow-y: auto;
+}
+
+.description-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Increased from 15px */
+}
+
+.description-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.edit-btn-small {
+  background: rgba(0, 123, 255, 0.7);
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.edit-btn-small:hover {
+  background: rgba(0, 123, 255, 0.9);
+}
+
+.description-panel h3 {
+  margin: 0;
+  color: hsla(160, 100%, 37%, 1);
+  font-size: 1.2rem;
+  /* Remove margin-bottom since we're using flex now */
+}
+
+.description-text {
+  line-height: 1.8; /* Increased from 1.6 */
+  white-space: pre-wrap;
+  font-size: 1.1rem; /* Larger text */
+  padding: 10px;
+}
+
+.selected {
+  border: 2px solid #4CAF50;
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+}
+
+.card-body {
+  position: relative; /* For absolute positioning of the button */
+}
+
+.card-actions {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  display: flex;
+  gap: 8px;
+}
+
+.regenerate-btn,
+.delete-btn {
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.delete-btn {
+  background: rgba(220, 53, 69, 0.7); /* Red background for delete button */
+}
+
+.regenerate-btn:hover,
+.delete-btn:hover {
+  opacity: 1;
+}
+
+.delete-btn:hover {
+  background: rgba(220, 53, 69, 0.9);
+}
+
+.edit-btn {
+  background: rgba(0, 123, 255, 0.7); /* Blue background for edit button */
+}
+
+.edit-btn:hover {
+  background: rgba(0, 123, 255, 0.9);
+}
+
+.edit-description {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.description-input {
+  width: 100%;
+  padding: 12px; /* Increased padding */
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  resize: vertical;
+  min-height: 120px; /* Taller default height */
+  font-size: 1.1rem; /* Match text size */
+}
+
+.edit-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.save-btn,
+.cancel-btn {
+  padding: 4px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.save-btn {
+  background: #28a745;
+  color: white;
+}
+
+.cancel-btn {
+  background: #6c757d;
+  color: white;
+}
+
+.save-btn:hover {
+  background: #218838;
+}
+
+.cancel-btn:hover {
+  background: #5a6268;
+}
+
+/* Add responsive breakpoints */
+@media (max-width: 1200px) {
+  .card-layout {
     justify-content: center;
   }
 
-  .card-body {
-    position: relative; /* For absolute positioning of the button */
+  section.anki-card_image {
+    width: 100%;
+  }
+
+  .anki-card-description {
+    width: 100%;
+    position: relative;
+    max-width: 700px; /* Match card width */
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .anki-card {
+    width: 100%;
+    max-width: 700px;
+    height: auto;
+    aspect-ratio: 1; /* Maintain square shape */
   }
 
   .card-actions {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    display: flex;
-    gap: 8px;
-  }
-
-  .regenerate-btn,
-  .delete-btn {
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    opacity: 0.8;
-    transition: opacity 0.2s;
-  }
-
-  .delete-btn {
-    background: rgba(220, 53, 69, 0.7); /* Red background for delete button */
-  }
-
-  .regenerate-btn:hover,
-  .delete-btn:hover {
-    opacity: 1;
-  }
-
-  .delete-btn:hover {
-    background: rgba(220, 53, 69, 0.9);
-  }
-
-  .edit-btn {
-    background: rgba(0, 123, 255, 0.7); /* Blue background for edit button */
-  }
-
-  .edit-btn:hover {
-    background: rgba(0, 123, 255, 0.9);
-  }
-
-  .edit-description {
-    display: flex;
     flex-direction: column;
-    gap: 8px;
+    right: 50%;
+    transform: translateX(50%);
+    align-items: center;
   }
-
-  .description-input {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    resize: vertical;
-  }
-
-  .edit-actions {
-    display: flex;
-    gap: 8px;
-  }
-
-  .save-btn,
-  .cancel-btn {
-    padding: 4px 12px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-
-  .save-btn {
-    background: #28a745;
-    color: white;
-  }
-
-  .cancel-btn {
-    background: #6c757d;
-    color: white;
-  }
-
-  .save-btn:hover {
-    background: #218838;
-  }
-
-  .cancel-btn:hover {
-    background: #5a6268;
-  }
+}
 </style>

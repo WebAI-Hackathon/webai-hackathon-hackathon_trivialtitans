@@ -3,7 +3,7 @@ const LLM_API_KEY = import.meta.env.VITE_LLM_API_KEY;
 
 export async function generateImage(
   prompt   : string,
-  size     : string = '256x256',
+  size     : string = '700x700',
   quality  : number = 0.7,
   mime     : string = 'image/png'
 ): Promise<string> {
