@@ -50,10 +50,6 @@ async function downloadApkg() {
     home
   </nav>
 
-  <button @click="downloadApkg" class="export-btn">
-    Export decks as .apkg
-  </button>
-
   <tool name="export_apkg" description="Export decks as .apkg file" @call="downloadApkg">
     <prop name="decks" type="array" required />
   </tool>
