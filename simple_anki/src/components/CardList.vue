@@ -112,7 +112,10 @@ async function downloadDummyApkg() {
         </div>
       </div>
       <div v-else class="card-container">
-        <Card :ankiCard="ankiCards[selectedCard - 1].cards" />
+        <Card 
+          :ankiCard="ankiCards[selectedCard - 1].cards"
+          :category="ankiCards[selectedCard - 1].topic" 
+        />
       </div>
     </div>
   </main>
