@@ -64,7 +64,6 @@ async function downloadDummyApkg() {
   </nav>
 
   <tool name="export_apkg" description="Export decks as .apkg file" @call="downloadApkg">
-    <prop name="decks" type="array" required />
   </tool>
 
   <tool name="export_dummy_apkg" description="Export dummy deck as .apkg file for live demo" @call="downloadDummyApkg">
